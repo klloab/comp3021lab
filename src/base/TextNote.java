@@ -59,14 +59,11 @@ public class TextNote extends Note implements Serializable {
 		String title = this.getTitle();
 		title = title.replaceAll(" ", "_");
 
-		System.out.println("title: " + title);
-		
 		if (pathFolder.length() > 0) {
 			pathFolder = pathFolder + File.separator;
 		}
-			
+
 		File file = new File(pathFolder + title + ".txt");
-		System.out.println("file: " + file);
 
 		try{
 			FileWriter writer = new FileWriter(file);
