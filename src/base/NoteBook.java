@@ -2,6 +2,7 @@ package base;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -23,7 +24,6 @@ public class NoteBook implements Serializable{
 	}
 	
 	public NoteBook(String file) {
-
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
@@ -89,9 +89,16 @@ public class NoteBook implements Serializable{
 		Collections.sort(folders);
 	}
 	
-//	public List<Note> searchNotes(String keywords) {
-//	
-//}
+	public List<Note> searchNotes(String keywords) {
+
+		ArrayList<Note> matchedNotes = new ArrayList<Note>();
+
+		for (Folder f: folders) {
+			matchedNotes.addAll(f.searchNotes(keywords));
+		}
+		
+		return matchedNotes;
+	}
 	
 	public boolean save(String file) {
 		FileOutputStream fos = null;
@@ -102,8 +109,10 @@ public class NoteBook implements Serializable{
 			out.writeObject(this);
 			out.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
+
 }

@@ -2,15 +2,18 @@ package base;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class TextNote extends Note {
+public class TextNote extends Note implements Serializable {
 
 	private String content;
+	private static final long serialVersionUID = 1L;
 	
 	public TextNote(String title){
 		super(title);
@@ -19,6 +22,10 @@ public class TextNote extends Note {
 	public TextNote(String title, String content){
 		super(title);
 		this.content = content;
+	}
+	
+	public String getContent() {
+		return this.content;
 	}
 	
 	public TextNote(File f){
@@ -50,18 +57,19 @@ public class TextNote extends Note {
 	
 	public void exportTextToFile(String pathFolder) {
 		String title = this.getTitle();
-		title = title.replace(" ", "_");
+		title = title.replaceAll(" ", "_");
+
+		System.out.println("title: " + title);
 		
 		File file = new File(pathFolder + File.pathSeparator + title + ".txt");
-		PrintWriter out = null;
-		
+		System.out.println("file: " + file);
+
 		try{
-			out = new PrintWriter(file);
-		    out.println(this.content);
+			FileWriter writer = new FileWriter(file);
+			writer.write(content);
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			out.close();
 		}
 	}
 }

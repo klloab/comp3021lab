@@ -1,10 +1,13 @@
 package base;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Folder implements Comparable<Folder>{
+public class Folder implements Comparable<Folder>, Serializable{
+
+	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Note> notes;
 	private String name;
@@ -68,7 +71,76 @@ public class Folder implements Comparable<Folder>{
 		Collections.sort(notes);
 	}
 	
-//	public List<Note> searchNotes(String keywords) {
-//		
-//	}
+	public List<Note> searchNotes(String keywords) {
+		
+		// Process Keywords
+		String[] keywordsArray = keywords.split(" ");
+		ArrayList<String> processedKeywordsArray = new ArrayList<String>();
+		
+		String tempString = "";
+		boolean orIndicator = false;
+		for (String keyword: keywordsArray) {
+			if (keyword.equalsIgnoreCase("or")) {
+				orIndicator = true;
+			} else {
+				if (orIndicator) {
+					tempString = tempString + " " + keyword;
+					orIndicator = false;
+				} else {
+					if (!tempString.equals("")) {
+						processedKeywordsArray.add(tempString.toLowerCase());
+					}
+					tempString = keyword;
+				}
+			}
+		}
+		processedKeywordsArray.add(tempString.toLowerCase());
+		
+		// Find Notes That Contains the Keywords
+		ArrayList<Note> matchedNotes = new ArrayList<Note>();
+	
+		for (Note note: notes) {
+			if (note instanceof ImageNote) {
+				if (isStringContentContainsKeywords(note.getTitle(), processedKeywordsArray)) {
+					matchedNotes.add(note);
+				}
+			} else if (note instanceof TextNote) {
+				if (isStringContentContainsKeywords(note.getTitle(), processedKeywordsArray) || isStringContentContainsKeywords(((TextNote)note).getContent(), processedKeywordsArray)) {
+					matchedNotes.add(note);
+				}
+			}
+		}
+		
+		// Return Result
+		return matchedNotes;
+	}
+	
+	private boolean isStringContentContainsKeywords(String content, ArrayList<String> keywords) {
+		
+		content = content.toLowerCase();
+		
+		boolean result = true;
+		
+		for (String keyword: keywords) {
+			if (keyword.contains(" ")) {
+				String[] keywordsArray = keyword.split(" ");
+				
+				result = false;
+				for (String orKeyword: keywordsArray) {
+					if (content.contains(orKeyword)) {
+						result = true;
+					}
+				}
+				
+			} else {
+				result = content.contains(keyword);
+			}
+			
+			if (!result) {
+				break;
+			}
+		}
+		
+		return result;
+	}
 }
