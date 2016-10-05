@@ -61,7 +61,11 @@ public class TextNote extends Note implements Serializable {
 
 		System.out.println("title: " + title);
 		
-		File file = new File(pathFolder + File.pathSeparator + title + ".txt");
+		if (pathFolder.length() > 0) {
+			pathFolder = pathFolder + File.separator;
+		}
+			
+		File file = new File(pathFolder + title + ".txt");
 		System.out.println("file: " + file);
 
 		try{
