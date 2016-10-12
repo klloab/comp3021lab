@@ -97,6 +97,10 @@ public class NoteBook implements Serializable{
 			matchedNotes.addAll(f.searchNotes(keywords));
 		}
 		
+//		for (Note note: matchedNotes) {
+//			System.out.println(note.getTitle());
+//		}
+		
 		return matchedNotes;
 	}
 	
